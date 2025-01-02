@@ -62,7 +62,7 @@ __all__ = ["copyfileobj", "copyfile", "copymode", "copystat", "copy", "copy2",
            "get_unpack_formats", "register_unpack_format",
            "unregister_unpack_format", "unpack_archive",
            "ignore_patterns", "chown", "which", "get_terminal_size",
-           "SameFileError", "umask_of"]
+           "SameFileError", "chdir", "umask_of"]
            # disk_usage is added later, if available on the platform
 
 class Error(OSError):
@@ -1581,6 +1581,21 @@ def which(cmd, mode=os.F_OK | os.X_OK, path=None):
                 if _access_check(name, mode):
                     return name
     return None
+
+
+class chdir(AbstractContextManager):
+    """Non thread-safe context manager to change the current working directory."""
+
+    def __init__(self, path):
+        self.path = path
+        self._old_cwd = []
+
+    def __enter__(self):
+        self._old_cwd.append(os.getcwd())
+        os.chdir(self.path)
+
+    def __exit__(self, *excinfo):
+        os.chdir(self._old_cwd.pop())
 
 
 class umask_of(AbstractContextManager):

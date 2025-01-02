@@ -1,6 +1,5 @@
 """Utilities for with-statement contexts.  See PEP 343."""
 import abc
-import os
 import sys
 import _collections_abc
 from collections import deque
@@ -799,16 +798,9 @@ class nullcontext(AbstractContextManager, AbstractAsyncContextManager):
         pass
 
 
-class chdir(AbstractContextManager):
-    """Non thread-safe context manager to change the current working directory."""
-
-    def __init__(self, path):
-        self.path = path
-        self._old_cwd = []
-
-    def __enter__(self):
-        self._old_cwd.append(os.getcwd())
-        os.chdir(self.path)
-
-    def __exit__(self, *excinfo):
-        os.chdir(self._old_cwd.pop())
+def chdir(path):
+    import warnings
+    from shutil import chdir as chdir_shutil
+    warnings.warn('contextlib.chdir has been relocated to shutil.chdir',
+                  DeprecationWarning, stacklevel=2)
+    return chdir_shutil(path)
