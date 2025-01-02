@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import argparse
-import contextlib
 import functools
 import os
 import shutil
@@ -84,7 +83,7 @@ def subdir(working_dir, *, clean_ok=False):
 
             working_dir.mkdir(parents=True, exist_ok=True)
 
-            with contextlib.chdir(working_dir):
+            with shutil.chdir(working_dir):
                 return func(context, working_dir)
 
         return wrapper
