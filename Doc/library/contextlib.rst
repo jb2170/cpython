@@ -376,19 +376,9 @@ Functions and classes provided:
 
 .. function:: chdir(path)
 
-   Non parallel-safe context manager to change the current working directory.
-   As this changes a global state, the working directory, it is not suitable
-   for use in most threaded or async contexts. It is also not suitable for most
-   non-linear code execution, like generators, where the program execution is
-   temporarily relinquished -- unless explicitly desired, you should not yield
-   when this context manager is active.
-
-   This is a simple wrapper around :func:`~os.chdir`, it changes the current
-   working directory upon entering and restores the old one on exit.
-
-   This context manager is :ref:`reentrant <reentrant-cms>`.
-
-   .. versionadded:: 3.11
+   .. deprecated:: 3.14
+      This context manager has been moved to :class:`shutil.chdir` due to its
+      non-trivial effect on a process's environment.
 
 
 .. class:: ContextDecorator()
@@ -945,7 +935,7 @@ but may also be used *inside* a :keyword:`!with` statement that is already
 using the same context manager.
 
 :class:`threading.RLock` is an example of a reentrant context manager, as are
-:func:`suppress`, :func:`redirect_stdout`, and :func:`chdir`. Here's a very
+:func:`suppress`, :func:`redirect_stdout`, and :class:`shutil.chdir`. Here's a very
 simple example of reentrant use::
 
     >>> from contextlib import redirect_stdout
