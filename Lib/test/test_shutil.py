@@ -21,7 +21,7 @@ from shutil import (make_archive,
                     get_archive_formats, Error, unpack_archive,
                     register_unpack_format, RegistryError,
                     unregister_unpack_format, get_unpack_formats,
-                    SameFileError, _GiveupOnFastCopy, umask_of)
+                    SameFileError, _GiveupOnFastCopy, chdir_of, umask_of)
 import tarfile
 import zipfile
 try:
@@ -3458,12 +3458,59 @@ class PublicAPITests(unittest.TestCase):
                       'unregister_archive_format', 'get_unpack_formats',
                       'register_unpack_format', 'unregister_unpack_format',
                       'unpack_archive', 'ignore_patterns', 'chown', 'which',
-                      'get_terminal_size', 'SameFileError', 'umask_of']
+                      'get_terminal_size', 'SameFileError', 'chdir_of', 'umask_of']
         if hasattr(os, 'statvfs') or os.name == 'nt':
             target_api.append('disk_usage')
         self.assertEqual(set(shutil.__all__), set(target_api))
         with self.assertWarns(DeprecationWarning):
             from shutil import ExecError
+
+
+class TestChdirOf(unittest.TestCase):
+    def make_relative_path(self, *parts):
+        return os.path.join(
+            os.path.dirname(os.path.realpath(__file__)),
+            *parts,
+        )
+
+    def test_simple(self):
+        old_cwd = os.getcwd()
+        target = self.make_relative_path('data')
+        self.assertNotEqual(old_cwd, target)
+
+        with chdir_of(target):
+            self.assertEqual(os.getcwd(), target)
+        self.assertEqual(os.getcwd(), old_cwd)
+
+    def test_reentrant(self):
+        old_cwd = os.getcwd()
+        target1 = self.make_relative_path('data')
+        target2 = self.make_relative_path('archivetestdata')
+        self.assertNotIn(old_cwd, (target1, target2))
+        chdir1, chdir2 = chdir_of(target1), chdir_of(target2)
+
+        with chdir1:
+            self.assertEqual(os.getcwd(), target1)
+            with chdir2:
+                self.assertEqual(os.getcwd(), target2)
+                with chdir1:
+                    self.assertEqual(os.getcwd(), target1)
+                self.assertEqual(os.getcwd(), target2)
+            self.assertEqual(os.getcwd(), target1)
+        self.assertEqual(os.getcwd(), old_cwd)
+
+    def test_exception(self):
+        old_cwd = os.getcwd()
+        target = self.make_relative_path('data')
+        self.assertNotEqual(old_cwd, target)
+
+        try:
+            with chdir_of(target):
+                self.assertEqual(os.getcwd(), target)
+                raise RuntimeError("boom")
+        except RuntimeError as re:
+            self.assertEqual(str(re), "boom")
+        self.assertEqual(os.getcwd(), old_cwd)
 
 
 @unittest.skipIf(os.name != "posix" or support.is_wasi or support.is_emscripten,

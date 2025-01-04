@@ -1,7 +1,6 @@
 """Unit tests for contextlib.py, and other context managers."""
 
 import io
-import os
 import sys
 import tempfile
 import threading
@@ -1316,50 +1315,15 @@ class TestSuppress(ExceptionIsLikeMixin, unittest.TestCase):
 
 
 class TestChdir(unittest.TestCase):
-    def make_relative_path(self, *parts):
-        return os.path.join(
-            os.path.dirname(os.path.realpath(__file__)),
-            *parts,
-        )
+    def test_backwards_compatibility(self):
+        # for testing the deprecated contextlib.chdir compatibility function
+        # which redirects to shutil.chdir
 
-    def test_simple(self):
-        old_cwd = os.getcwd()
-        target = self.make_relative_path('data')
-        self.assertNotEqual(old_cwd, target)
-
-        with chdir(target):
-            self.assertEqual(os.getcwd(), target)
-        self.assertEqual(os.getcwd(), old_cwd)
-
-    def test_reentrant(self):
-        old_cwd = os.getcwd()
-        target1 = self.make_relative_path('data')
-        target2 = self.make_relative_path('archivetestdata')
-        self.assertNotIn(old_cwd, (target1, target2))
-        chdir1, chdir2 = chdir(target1), chdir(target2)
-
-        with chdir1:
-            self.assertEqual(os.getcwd(), target1)
-            with chdir2:
-                self.assertEqual(os.getcwd(), target2)
-                with chdir1:
-                    self.assertEqual(os.getcwd(), target1)
-                self.assertEqual(os.getcwd(), target2)
-            self.assertEqual(os.getcwd(), target1)
-        self.assertEqual(os.getcwd(), old_cwd)
-
-    def test_exception(self):
-        old_cwd = os.getcwd()
-        target = self.make_relative_path('data')
-        self.assertNotEqual(old_cwd, target)
-
-        try:
-            with chdir(target):
-                self.assertEqual(os.getcwd(), target)
-                raise RuntimeError("boom")
-        except RuntimeError as re:
-            self.assertEqual(str(re), "boom")
-        self.assertEqual(os.getcwd(), old_cwd)
+        chdir_ctx = chdir("/")
+        with chdir_ctx:
+            # we can enter and exit, thus we know contextlib.chdir
+            # returned an instance of shutil.chdir
+            pass
 
 
 if __name__ == "__main__":
