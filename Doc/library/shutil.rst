@@ -892,7 +892,7 @@ High-level :term:`context managers <context manager>` for changing a process's e
    temporarily relinquished. Unless explicitly desired, you should not yield
    within these context managers.
 
-.. class:: chdir(path)
+.. class:: chdir_of(path)
 
    This is a simple wrapper around :func:`os.chdir`. It changes the current
    working directory upon entering and restores the old one on exit.
@@ -900,7 +900,7 @@ High-level :term:`context managers <context manager>` for changing a process's e
    This context manager is :ref:`reentrant <reentrant-cms>`.
 
    .. versionchanged:: 3.14
-      This context manager used to be located in :mod:`contextlib`
+      This context manager used to be located in :mod:`contextlib` as :class:`!chdir`
 
 .. class:: umask_of(mask)
 

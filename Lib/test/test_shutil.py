@@ -21,7 +21,7 @@ from shutil import (make_archive,
                     get_archive_formats, Error, unpack_archive,
                     register_unpack_format, RegistryError,
                     unregister_unpack_format, get_unpack_formats,
-                    SameFileError, _GiveupOnFastCopy, chdir, umask_of)
+                    SameFileError, _GiveupOnFastCopy, chdir_of, umask_of)
 import tarfile
 import zipfile
 try:
@@ -3458,7 +3458,7 @@ class PublicAPITests(unittest.TestCase):
                       'unregister_archive_format', 'get_unpack_formats',
                       'register_unpack_format', 'unregister_unpack_format',
                       'unpack_archive', 'ignore_patterns', 'chown', 'which',
-                      'get_terminal_size', 'SameFileError', 'chdir', 'umask_of']
+                      'get_terminal_size', 'SameFileError', 'chdir_of', 'umask_of']
         if hasattr(os, 'statvfs') or os.name == 'nt':
             target_api.append('disk_usage')
         self.assertEqual(set(shutil.__all__), set(target_api))
@@ -3466,7 +3466,7 @@ class PublicAPITests(unittest.TestCase):
             from shutil import ExecError
 
 
-class TestChdir(unittest.TestCase):
+class TestChdirOf(unittest.TestCase):
     def make_relative_path(self, *parts):
         return os.path.join(
             os.path.dirname(os.path.realpath(__file__)),
@@ -3478,7 +3478,7 @@ class TestChdir(unittest.TestCase):
         target = self.make_relative_path('data')
         self.assertNotEqual(old_cwd, target)
 
-        with chdir(target):
+        with chdir_of(target):
             self.assertEqual(os.getcwd(), target)
         self.assertEqual(os.getcwd(), old_cwd)
 
@@ -3487,7 +3487,7 @@ class TestChdir(unittest.TestCase):
         target1 = self.make_relative_path('data')
         target2 = self.make_relative_path('archivetestdata')
         self.assertNotIn(old_cwd, (target1, target2))
-        chdir1, chdir2 = chdir(target1), chdir(target2)
+        chdir1, chdir2 = chdir_of(target1), chdir_of(target2)
 
         with chdir1:
             self.assertEqual(os.getcwd(), target1)
@@ -3505,7 +3505,7 @@ class TestChdir(unittest.TestCase):
         self.assertNotEqual(old_cwd, target)
 
         try:
-            with chdir(target):
+            with chdir_of(target):
                 self.assertEqual(os.getcwd(), target)
                 raise RuntimeError("boom")
         except RuntimeError as re:

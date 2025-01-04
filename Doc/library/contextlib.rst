@@ -377,7 +377,7 @@ Functions and classes provided:
 .. function:: chdir(path)
 
    .. deprecated:: 3.14
-      This context manager has been moved to :class:`shutil.chdir` due to its
+      This context manager has been moved to :class:`shutil.chdir_of` due to its
       non-trivial effect on a process's environment.
 
 
@@ -935,7 +935,7 @@ but may also be used *inside* a :keyword:`!with` statement that is already
 using the same context manager.
 
 :class:`threading.RLock` is an example of a reentrant context manager, as are
-:func:`suppress`, :func:`redirect_stdout`, and :class:`shutil.chdir`. Here's a very
+:func:`suppress`, :func:`redirect_stdout`, and :class:`shutil.chdir_of`. Here's a very
 simple example of reentrant use::
 
     >>> from contextlib import redirect_stdout
