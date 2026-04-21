@@ -330,7 +330,6 @@ class ShlexTest(unittest.TestCase):
         unsafe = '"`$\\!' + unicode_sample
 
         self.assertEqual(shlex.quote(''), "''")
-        self.assertEqual(shlex.quote(None), "''")
         self.assertEqual(shlex.quote(safeunquoted), safeunquoted)
         self.assertEqual(shlex.quote('test file name'), "'test file name'")
         for u in unsafe:
@@ -339,6 +338,7 @@ class ShlexTest(unittest.TestCase):
         for u in unsafe:
             self.assertEqual(shlex.quote("test%s'name'" % u),
                              "'test%s'\"'\"'name'\"'\"''" % u)
+        self.assertRaises(TypeError, shlex.quote, None)
         self.assertRaises(TypeError, shlex.quote, 42)
         self.assertRaises(TypeError, shlex.quote, b"abc")
 
