@@ -1,0 +1,2 @@
+Fix :func:`shlex.quote` to no longer return a quoted empty string ``"''"``
+for falsey non-str data.
