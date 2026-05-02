@@ -338,9 +338,16 @@ class ShlexTest(unittest.TestCase):
         for u in unsafe:
             self.assertEqual(shlex.quote("test%s'name'" % u),
                              "'test%s'\"'\"'name'\"'\"''" % u)
-        self.assertRaises(TypeError, shlex.quote, None)
+
+    def testQuoteTypeError(self):
         self.assertRaises(TypeError, shlex.quote, 42)
         self.assertRaises(TypeError, shlex.quote, b"abc")
+
+    def testQuoteTypeErrorFalsey(self):
+        self.assertRaises(TypeError, shlex.quote, False)
+        self.assertRaises(TypeError, shlex.quote, None)
+        self.assertRaises(TypeError, shlex.quote, b'')
+        self.assertRaises(TypeError, shlex.quote, 0)
 
     def testJoin(self):
         for split_command, command in [
