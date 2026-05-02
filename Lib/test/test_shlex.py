@@ -343,11 +343,11 @@ class ShlexTest(unittest.TestCase):
         self.assertRaises(TypeError, shlex.quote, 42)
         self.assertRaises(TypeError, shlex.quote, b"abc")
 
-    def testQuoteTypeErrorFalsey(self):
-        self.assertRaises(TypeError, shlex.quote, False)
-        self.assertRaises(TypeError, shlex.quote, None)
-        self.assertRaises(TypeError, shlex.quote, b'')
-        self.assertRaises(TypeError, shlex.quote, 0)
+    def testQuoteFalseyNonStr(self):
+        self.assertWarns(DeprecationWarning, shlex.quote, False)
+        self.assertWarns(DeprecationWarning, shlex.quote, None)
+        self.assertWarns(DeprecationWarning, shlex.quote, b'')
+        self.assertWarns(DeprecationWarning, shlex.quote, 0)
 
     def testJoin(self):
         for split_command, command in [
