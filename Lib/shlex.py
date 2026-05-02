@@ -320,6 +320,15 @@ def join(split_command):
 def quote(s):
     """Return a shell-escaped version of the string *s*."""
     if not isinstance(s, str):
+        if not s:
+            import warnings
+            warnings.warn(
+                "Calling quote on non-string objects is deprecated.",
+                category=DeprecationWarning,
+                stacklevel=2
+            )
+            return "''"
+
         raise TypeError(f"expected string object, got {type(s).__name__!r}")
 
     if not s:
