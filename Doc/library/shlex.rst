@@ -93,6 +93,10 @@ The :mod:`!shlex` module defines the following functions:
 
    .. versionadded:: 3.3
 
+   .. deprecated:: next
+      Calling :func:`quote` on ``None`` and other falsey data, which
+      currently returns a quoted empty string ``"''"``, is now deprecated
+
 The :mod:`!shlex` module defines the following class:
 
 
