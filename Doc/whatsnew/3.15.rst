@@ -1015,6 +1015,13 @@ shelve
   (Contributed by Furkan Onder in :gh:`99631`.)
 
 
+shlex
+-----
+
+* Deprecate calling :func:`shlex.quote` on falsey non-str data,
+  which currently returns a quoted empty string ``"''"``.
+
+
 socket
 ------
 

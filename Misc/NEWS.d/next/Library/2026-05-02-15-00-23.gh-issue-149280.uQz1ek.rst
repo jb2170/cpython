@@ -1,2 +1,2 @@
-Fix :func:`shlex.quote` to no longer return a quoted empty string ``"''"``
-for falsey non-str data.
+Deprecate calling :func:`shlex.quote` on falsey non-str data,
+which currently returns a quoted empty string ``"''"``.
