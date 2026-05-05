@@ -1402,6 +1402,7 @@ class _SubParsersAction(Action):
         # values from the subnamespace.
         subnamespace_name = getattr(subparser, 'subnamespace', None)
         if subnamespace_name is not None:
+            subnamespace_name = subnamespace_name.replace('-', '_')
             setattr(namespace, subnamespace_name, subnamespace)
         else:
             for key, value in vars(subnamespace).items():
